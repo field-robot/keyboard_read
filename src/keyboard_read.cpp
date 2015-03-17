@@ -1,9 +1,10 @@
 #include "ros/ros.h"
-#include "turtlesim/Velocity.h"
+//#include "turtlesim/Velocity.h"
 #include "signal.h"
 #include "termios.h"
 #include "stdio.h"
 #include "std_msgs/Int8.h"
+#include <sstream>
 	
 #define KEYCODE_R 0x43
 #define KEYCODE_L 0x44
@@ -35,7 +36,7 @@ TeleopTurtle::TeleopTurtle():
   nh_.param("scale_angular", a_scale_, a_scale_);
   nh_.param("scale_linear", l_scale_, l_scale_);
 
-  vel_pub_ = nh_.advertise<turtlesim::Velocity>("turtle1/command_velocity", 1);
+  //vel_pub_ = nh_.advertise<turtlesim::Velocity>("turtle1/command_velocity", 1);
 }
 
 int kfd = 0;
@@ -51,11 +52,61 @@ void quit(int sig)
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "teleop_turtle");
-  TeleopTurtle teleop_turtle;
-	  signal(SIGINT,quit);
+  ros::init(argc, argv, "keyboard_read");
+  //TeleopTurtle teleop_turtle;
+	//  signal(SIGINT,quit);
 
-	  teleop_turtle.keyLoop();
+	 // teleop_turtle.keyLoop();
+
+   ros::NodeHandle n;
+ 
+   
+
+while (ros::ok())
+  {
+
+    
+    
+   std_msgs::Int8 msg;
+
+    msg.data = linear_;
+
+    ROS_INFO("%i", msg.data);
+
+ 
+    chatter_pub.publish(msg);
+
+  
+  ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("linear_", 1000);
+
+
+
+    ros::spinOnce();
+
+    loop_rate.sleep();
+    
+  }
+
+while (ros::ok())
+{
+
+
+
+	std_msgs::Int8 msg;
+
+    msg.data = angular_;
+
+    ROS_INFO("%i", msg.data);
+
+ 
+    chatter_pub.publish(msg);
+ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("angular_", 1000);
+
+    ros::spinOnce();
+
+    loop_rate.sleep();
+
+}
  
   return(0);
 }
@@ -117,54 +168,33 @@ void TeleopTurtle::keyLoop()
         break;
     }
    
-while (ros::ok())
-  {
-    
-   std_msgs::Int8 msg;
 
-    msg.data = linear_;
 
-    ROS_INFO("%i", msg.data);
+  
 
- 
-    chatter_pub.publish(msg);
+  
+   ros::NodeHandle n;
 
-    ros::spinOnce();
+  
+  ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("battery_value", 1000);
 
-    loop_rate.sleep();
+  ros::Rate loop_rate(10);
 
-    ros::spinOnce();
 
-    loop_rate.sleep();
-    
-  }
+  
 
-while (ros::ok())
-{
 
-	std_msgs::Int8 msg;
+  
 
-    msg.data = angular;
 
-    ROS_INFO("%i", msg.data);
-
- 
-    chatter_pub.publish(msg);
-
-    ros::spinOnce();
-
-    loop_rate.sleep();
-
-}
-
-    turtlesim::Velocity vel;
-    vel.angular = a_scale_*angular_;
-    vel.linear = l_scale_*linear_;
-    if(dirty ==true)
-    {
-      vel_pub_.publish(vel);   
-      dirty=false;
-    }
+  // turtlesim::Velocity vel;
+  // vel.angular = a_scale_*angular_;
+  // vel.linear = l_scale_*linear_;
+  // if(dirty ==true)
+  //  {
+  //   vel_pub_.publish(vel);   
+  //    dirty=false;
+  //  }
  }
 
 
