@@ -52,20 +52,19 @@ void quit(int sig)
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "keyboard_read");
+   
+   
+
+while (ros::ok())
+  {
+
+    ros::init(argc, argv, "keyboard_read");
   //TeleopTurtle teleop_turtle;
 	//  signal(SIGINT,quit);
 
 	 // teleop_turtle.keyLoop();
 
    ros::NodeHandle n;
- 
-   
-
-while (ros::ok())
-  {
-
-    
     
    std_msgs::Int8 msg;
 
@@ -77,9 +76,9 @@ while (ros::ok())
     chatter_pub.publish(msg);
 
   
-  ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("linear_", 1000);
+	ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("linear_", 1000);
 
-
+	ros::Rate loop_rate(10);
 
     ros::spinOnce();
 
@@ -90,7 +89,13 @@ while (ros::ok())
 while (ros::ok())
 {
 
+ros::init(argc, argv, "keyboard_read");
+  //TeleopTurtle teleop_turtle;
+	//  signal(SIGINT,quit);
 
+	 // teleop_turtle.keyLoop();
+
+   ros::NodeHandle n;
 
 	std_msgs::Int8 msg;
 
@@ -100,11 +105,16 @@ while (ros::ok())
 
  
     chatter_pub.publish(msg);
-ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("angular_", 1000);
+	ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("angular_", 1000);
+
+	ros::Rate loop_rate(10);
 
     ros::spinOnce();
 
     loop_rate.sleep();
+
+
+
 
 }
  
@@ -172,13 +182,6 @@ void TeleopTurtle::keyLoop()
 
   
 
-  
-   ros::NodeHandle n;
-
-  
-  ros::Publisher chatter_pub = n.advertise<std_msgs::Int8>("battery_value", 1000);
-
-  ros::Rate loop_rate(10);
 
 
   
